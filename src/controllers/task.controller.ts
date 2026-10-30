@@ -5,6 +5,7 @@ import { tasks } from '../db/schema.js';
 import { NotFoundError } from '../utils/http-error.js';
 import {
   createTaskSchema,
+  listTasksQuerySchema,
   replaceTaskSchema,
   taskIdParamSchema,
   updateTaskSchema,
@@ -12,8 +13,14 @@ import {
 
 // Express 5 propaga automáticamente los errores de handlers async al error handler.
 
-export async function listTasks(_req: Request, res: Response) {
-  const rows = await db.select().from(tasks).orderBy(asc(tasks.id));
+export async function listTasks(req: Request, res: Response) {
+  const { status } = listTasksQuerySchema.parse(req.query);
+
+  const rows = await db
+    .select()
+    .from(tasks)
+    .where(status ? eq(tasks.status, status) : undefined)
+    .orderBy(asc(tasks.id));
 
   res.status(200).json(rows);
 }

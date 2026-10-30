@@ -1,0 +1,3 @@
+CREATE TYPE "public"."task_status" AS ENUM('pending', 'in_progress', 'done');--> statement-breakpoint
+ALTER TABLE "tasks" ADD COLUMN "status" "task_status" DEFAULT 'pending' NOT NULL;--> statement-breakpoint
+ALTER TABLE "tasks" ADD COLUMN "updated_at" timestamp with time zone DEFAULT now() NOT NULL;
